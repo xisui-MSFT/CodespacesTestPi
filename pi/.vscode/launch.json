@@ -1,0 +1,54 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C++ Embedded Debugging with GDB",
+            "type": "cppEmbeddedDbg",
+            "request": "launch",
+            "variables": {
+                "user": "pi",
+                "host": "xisuipi",
+                "port": "22100",
+                "program": "${command:cmake.launchTargetPath}",
+                "targetFile_path": "/home/pi/${command:cmake.launchTargetFilename}"
+            },
+            "program": "${program}",
+            "stopAtEntry": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            "miDebuggerServerAddress": "${host}:${port}",
+            "deployApp": [
+                {
+                    "type": "scp",
+                    "user": "${user}",
+                    "files": "${program}",
+                    "host": "${host}",
+                    "targetDir": "${targetFile_dirname}"
+                },
+                {
+                    "type": "ssh",
+                    "user": "${user}",
+                    "host": "${host}",
+                    "command": "chmod +x ${targetFile_path}",
+                }
+            ],
+            "startDebuggerServer": {
+                "type": "ssh",
+                "user": "${user}",
+                "host": "${host}",
+                "command": "gdbserver :${port} ${targetFile_path}",
+                "continueOn": "Listening on port"
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
